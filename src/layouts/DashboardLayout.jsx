@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
   const menuItems = [
@@ -13,6 +13,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/committee', label: 'Committee', icon: <Users size={18} /> },
     { path: '/users', label: 'User Management', icon: <Shield size={18} /> },
     { path: '/payments', label: 'Event Payments', icon: <CreditCard size={18} /> },
+    { path: '/registration-photos', label: 'Registration Photos', icon: <Camera size={18} /> },
     { path: '/donations', label: 'Donations', icon: <Heart size={18} /> },
     { path: '/settings', label: 'CMS Settings', icon: <Settings size={18} /> },
     { path: '/about-settings', label: 'About Page CMS', icon: <History size={18} /> },
