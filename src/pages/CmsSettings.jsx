@@ -28,12 +28,12 @@ const CmsSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const welcomeRes = await axios.get('http://localhost:5000/api/v1/settings/welcome_text');
+      const welcomeRes = await axios.get(`${window.API_URL}/api/v1/settings/welcome_text`);
       if (welcomeRes.data.success && welcomeRes.data.data) {
         setWelcomeText(welcomeRes.data.data.welcomeText || '');
       }
 
-      const slidesRes = await axios.get('http://localhost:5000/api/v1/settings/hero_slides');
+      const slidesRes = await axios.get(`${window.API_URL}/api/v1/settings/hero_slides`);
       if (slidesRes.data.success && slidesRes.data.data && Array.isArray(slidesRes.data.data.slides)) {
         setSlides(slidesRes.data.data.slides);
       }
@@ -46,7 +46,7 @@ const CmsSettings = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put('http://localhost:5000/api/v1/settings/welcome_text', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/welcome_text`, {
         value: { welcomeText }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -73,7 +73,7 @@ const CmsSettings = () => {
       // 1. Upload slide image file first
       const uploadData = new FormData();
       uploadData.append('image', slideImageFile);
-      const uploadRes = await axios.post('http://localhost:5000/api/v1/settings/upload', uploadData, {
+      const uploadRes = await axios.post(`${window.API_URL}/api/v1/settings/upload`, uploadData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -102,7 +102,7 @@ const CmsSettings = () => {
 
       const updatedSlides = [...slides, newSlide];
 
-      const res = await axios.put('http://localhost:5000/api/v1/settings/hero_slides', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -136,7 +136,7 @@ const CmsSettings = () => {
     const updatedSlides = slides.filter((_, idx) => idx !== indexToDelete);
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put('http://localhost:5000/api/v1/settings/hero_slides', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
         headers: { Authorization: `Bearer ${token}` }
