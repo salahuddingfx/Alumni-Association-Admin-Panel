@@ -6,9 +6,14 @@ const DonationsTracker = () => {
   const [donations, setDonations] = useState([]);
 
   useEffect(() => {
-    const token = localStorage.getItem('accessToken');
-    api.get(`/donations`, {
-      headers: { []);
+    api.get(`/donations`)
+      .then(res => {
+        if (res.data.success) {
+          setDonations(res.data.data);
+        }
+      })
+      .catch(err => console.log(err));
+  }, []);
 
   return (
     <div className="bg-dark-card p-6 rounded-xl border border-slate-800 space-y-6">
