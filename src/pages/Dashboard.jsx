@@ -10,14 +10,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Attempt stats fetching
-    axios.get('http://localhost:5000/api/v1/donations/stats')
+    axios.get(`${window.API_URL}/api/v1/donations/stats`)
       .then(res => {
         if (res.data.success) {
           setDonationTotal(res.data.data.totalAmount);
         }
       }).catch(() => {});
 
-    axios.get('http://localhost:5000/api/v1/members')
+    axios.get(`${window.API_URL}/api/v1/members`)
       .then(res => {
         if (res.data.success) {
           setMemberCount(res.data.data.total || 104);
