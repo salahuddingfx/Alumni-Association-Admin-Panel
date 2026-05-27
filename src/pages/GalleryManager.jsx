@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Plus, Trash, Image as ImageIcon, Upload } from 'lucide-react';
 
 const GalleryManager = () => {
@@ -15,7 +15,7 @@ const GalleryManager = () => {
   }, []);
 
   const fetchItems = () => {
-    axios.get(`${window.API_URL}/api/v1/gallery`)
+    api.get(`${window.API_URL}/api/v1/gallery`)
       .then(res => {
         if (res.data.success) {
           setItems(res.data.data);
@@ -35,7 +35,7 @@ const GalleryManager = () => {
       }
 
       const token = localStorage.getItem('accessToken');
-      const res = await axios.post(`${window.API_URL}/api/v1/gallery`, formData, {
+      const res = await api.post(`${window.API_URL}/api/v1/gallery`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -59,7 +59,7 @@ const GalleryManager = () => {
     if (!window.confirm('Delete this gallery item?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`${window.API_URL}/api/v1/gallery/${id}`, {
+      await api.delete(`${window.API_URL}/api/v1/gallery/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchItems();

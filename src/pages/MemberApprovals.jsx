@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { UserCheck, Trash } from 'lucide-react';
 
 const MemberApprovals = () => {
@@ -11,7 +11,7 @@ const MemberApprovals = () => {
 
   const fetchPending = () => {
     const token = localStorage.getItem('accessToken');
-    axios.get(`${window.API_URL}/api/v1/members/admin/pending`, {
+    api.get(`${window.API_URL}/api/v1/members/admin/pending`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
@@ -25,7 +25,7 @@ const MemberApprovals = () => {
   const handleApprove = async (id) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put(`${window.API_URL}/api/v1/members/${id}/approve`, {}, {
+      const res = await api.put(`${window.API_URL}/api/v1/members/${id}/approve`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
