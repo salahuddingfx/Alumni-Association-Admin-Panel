@@ -1,0 +1,33 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --primary: #003B73;
+    --secondary: #F9A826;
+    --accent: #4FC3F7;
+    --dark: #071426;
+    --white: #FFFFFF;
+  }
+
+  body {
+    @apply bg-[#050e1a] text-slate-100 overflow-x-hidden;
+  }
+
+  .font-bn {
+    font-family: 'Hind Siliguri', 'Noto Sans Bengali', sans-serif;
+  }
+
+  .font-en {
+    font-family: 'Inter', 'Poppins', sans-serif;
+  }
+}
+
+/* Glassmorphism overrides for dark panel design */
+.glass-panel-dark {
+  background: rgba(13, 31, 54, 0.6);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
