@@ -600,7 +600,6 @@ const CmsSettings = () => {
         </div>
       </div>
       </div>
-    </div>
   );
 };
 
