@@ -14,6 +14,7 @@ import CmsSettings from './pages/CmsSettings.jsx';
 import AboutManager from './pages/AboutManager.jsx';
 import BlogsManager from './pages/BlogsManager.jsx';
 import Login from './pages/Login.jsx';
+import RegistrationsPhotos from './pages/RegistrationsPhotos.jsx';
 
 const App = () => {
   const navigate = useNavigate();
@@ -47,6 +48,7 @@ const App = () => {
         <Route path="/committee" element={<CommitteeManager />} />
         <Route path="/users" element={<UserManager />} />
         <Route path="/payments" element={<PaymentsManager />} />
+        <Route path="/registration-photos" element={<RegistrationsPhotos />} />
         <Route path="/donations" element={<DonationsTracker />} />
         <Route path="/settings" element={<CmsSettings />} />
         <Route path="/about-settings" element={<AboutManager />} />
