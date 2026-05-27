@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Plus, Trash, Users, Upload } from 'lucide-react';
 
 const CommitteeManager = () => {
@@ -20,7 +20,7 @@ const CommitteeManager = () => {
   }, []);
 
   const fetchMembers = () => {
-    axios.get(`${window.API_URL}/api/v1/committees`)
+    api.get(`/committees`)
       .then(res => {
         if (res.data.success) {
           setMembers(res.data.data);
@@ -43,10 +43,8 @@ const CommitteeManager = () => {
         formData.append('image', imageFile);
       }
 
-      const res = await axios.post(`${window.API_URL}/api/v1/committees`, formData, {
-        headers: { 
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+      const res = await api.post(`/committees`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data'
         }
       });
 
@@ -73,12 +71,8 @@ const CommitteeManager = () => {
     if (!window.confirm('Delete this member from the committee?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`${window.API_URL}/api/v1/committees/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      fetchMembers();
-      setMessage('Member deleted successfully.');
-      setTimeout(() => setMessage(''), 3000);
+      await api.delete(`/committees/${id}`, {
+        headers: { 3000);
     } catch (err) {
       console.log(err);
     }
