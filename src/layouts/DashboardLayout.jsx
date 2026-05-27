@@ -47,7 +47,7 @@ const DashboardLayout = ({ children }) => {
               প
             </div>
             <div className="flex flex-col">
-              <span className="text-base font-bold text-slate-100 font-bn tracking-wide">প্রাক্তন পরিষদ</span>
+              <span className="text-base font-bold text-slate-100 font-bn tracking-wide">প্রাক্তন শিক্ষার্থী পরিষদ</span>
               <span className="text-xxs text-gray-500 font-medium uppercase tracking-wider">Admin Panel</span>
             </div>
           </div>
