@@ -15,7 +15,7 @@ const GalleryManager = () => {
   }, []);
 
   const fetchItems = () => {
-    axios.get('http://localhost:5000/api/v1/gallery')
+    axios.get(`${window.API_URL}/api/v1/gallery`)
       .then(res => {
         if (res.data.success) {
           setItems(res.data.data);
@@ -35,7 +35,7 @@ const GalleryManager = () => {
       }
 
       const token = localStorage.getItem('accessToken');
-      const res = await axios.post('http://localhost:5000/api/v1/gallery', formData, {
+      const res = await axios.post(`${window.API_URL}/api/v1/gallery`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -59,7 +59,7 @@ const GalleryManager = () => {
     if (!window.confirm('Delete this gallery item?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`http://localhost:5000/api/v1/gallery/${id}`, {
+      await axios.delete(`${window.API_URL}/api/v1/gallery/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchItems();
@@ -132,7 +132,7 @@ const GalleryManager = () => {
         <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-[500px]">
           {items.map(item => (
             <div key={item._id} className="relative group rounded overflow-hidden border border-slate-800 bg-slate-900">
-              <img src={item.url.startsWith('http') ? item.url : `http://localhost:5000${item.url}`} className="w-full h-20 object-cover" alt="" />
+              <img src={item.url.startsWith('http') ? item.url : `${window.API_URL}${item.url}`} className="w-full h-20 object-cover" alt="" />
               <button
                 onClick={() => handleDelete(item._id)}
                 className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 p-1 rounded text-white opacity-0 group-hover:opacity-100 transition-opacity"
