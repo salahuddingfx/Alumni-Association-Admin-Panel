@@ -22,12 +22,12 @@ const AboutManager = () => {
 
   const fetchSettings = async () => {
     try {
-      const timelineRes = await axios.get('http://localhost:5000/api/v1/settings/timeline_events');
+      const timelineRes = await axios.get(`${window.API_URL}/api/v1/settings/timeline_events`);
       if (timelineRes.data.success && timelineRes.data.data && Array.isArray(timelineRes.data.data.events)) {
         setTimelineEvents(timelineRes.data.data.events);
       }
 
-      const advisorRes = await axios.get('http://localhost:5000/api/v1/settings/advisor_messages');
+      const advisorRes = await axios.get(`${window.API_URL}/api/v1/settings/advisor_messages`);
       if (advisorRes.data.success && advisorRes.data.data && Array.isArray(advisorRes.data.data.advisors)) {
         setAdvisors(advisorRes.data.data.advisors);
       } else {
@@ -73,7 +73,7 @@ const AboutManager = () => {
 
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put('http://localhost:5000/api/v1/settings/timeline_events', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/timeline_events`, {
         value: { events: updatedEvents }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -97,7 +97,7 @@ const AboutManager = () => {
     const updatedEvents = timelineEvents.filter((_, idx) => idx !== indexToDelete);
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put('http://localhost:5000/api/v1/settings/timeline_events', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/timeline_events`, {
         value: { events: updatedEvents }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -121,7 +121,7 @@ const AboutManager = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put('http://localhost:5000/api/v1/settings/advisor_messages', {
+      const res = await axios.put(`${window.API_URL}/api/v1/settings/advisor_messages`, {
         value: { advisors }
       }, {
         headers: { Authorization: `Bearer ${token}` }
