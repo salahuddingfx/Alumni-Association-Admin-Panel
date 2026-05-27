@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Plus, Trash, BookOpen, Upload, Send } from 'lucide-react';
 
 const BlogsManager = () => {
@@ -21,7 +21,7 @@ const BlogsManager = () => {
   }, []);
 
   const fetchBlogs = () => {
-    axios.get(`${window.API_URL}/api/v1/blogs`)
+    api.get(`/blogs`)
       .then(res => {
         if (res.data.success) {
           setBlogs(res.data.data);
@@ -49,10 +49,8 @@ const BlogsManager = () => {
         formData.append('thumbnail', thumbnailFile);
       }
 
-      const res = await axios.post(`${window.API_URL}/api/v1/blogs`, formData, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'multipart/form-data'
+      const res = await api.post(`/blogs`, formData, {
+        headers: { 'Content-Type': 'multipart/form-data'
         }
       });
 
@@ -82,12 +80,8 @@ const BlogsManager = () => {
     if (!window.confirm('Delete this blog post?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`${window.API_URL}/api/v1/blogs/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      fetchBlogs();
-      setMessage('Blog post deleted successfully.');
-      setTimeout(() => setMessage(''), 3000);
+      await api.delete(`/blogs/${id}`, {
+        headers: { 3000);
     } catch (err) {
       console.log(err);
     }
