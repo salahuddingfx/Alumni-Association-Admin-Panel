@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Heart } from 'lucide-react';
 
 const DonationsTracker = () => {
@@ -7,7 +7,7 @@ const DonationsTracker = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    axios.get('http://localhost:5000/api/v1/donations', {
+    api.get('/donations', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {

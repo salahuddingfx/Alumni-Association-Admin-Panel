@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { convertBanglishToBengali } from '../utils/banglish';
 import { Send, Globe, Plus, Trash } from 'lucide-react';
 
@@ -19,7 +19,7 @@ const NoticesManager = () => {
   }, []);
 
   const fetchNotices = () => {
-    axios.get('http://localhost:5000/api/v1/notices')
+    api.get('/notices')
       .then(res => {
         if (res.data.success) {
           setNotices(res.data.data);
@@ -47,7 +47,7 @@ const NoticesManager = () => {
       };
 
       const token = localStorage.getItem('accessToken');
-      const res = await axios.post('http://localhost:5000/api/v1/notices', payload, {
+      const res = await api.post('/notices', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
@@ -69,7 +69,7 @@ const NoticesManager = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.delete(`http://localhost:5000/api/v1/notices/${id}`, {
+      const res = await api.delete(`/notices/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { Users, FileText, Heart, Shield } from 'lucide-react';
 
@@ -10,14 +10,14 @@ const Dashboard = () => {
 
   useEffect(() => {
     // Attempt stats fetching
-    axios.get('http://localhost:5000/api/v1/donations/stats')
+    api.get('/donations/stats')
       .then(res => {
         if (res.data.success) {
           setDonationTotal(res.data.data.totalAmount);
         }
       }).catch(() => {});
 
-    axios.get('http://localhost:5000/api/v1/members')
+    api.get('/members')
       .then(res => {
         if (res.data.success) {
           setMemberCount(res.data.data.total || 104);

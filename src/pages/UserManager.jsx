@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { UserCheck, UserX, Trash, Shield, ShieldAlert, ShieldCheck } from 'lucide-react';
 
 const UserManager = () => {
@@ -12,7 +12,7 @@ const UserManager = () => {
 
   const fetchUsers = () => {
     const token = localStorage.getItem('accessToken');
-    axios.get('http://localhost:5000/api/v1/users', {
+    api.get('/users', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
@@ -26,7 +26,7 @@ const UserManager = () => {
   const handleApproveToggle = async (userId) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put(`http://localhost:5000/api/v1/users/${userId}/approve`, {}, {
+      const res = await api.put(`/users/${userId}/approve`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -42,7 +42,7 @@ const UserManager = () => {
   const handleRoleChange = async (userId, newRole) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put(`http://localhost:5000/api/v1/users/${userId}/role`, { role: newRole }, {
+      const res = await api.put(`/users/${userId}/role`, { role: newRole }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -59,7 +59,7 @@ const UserManager = () => {
     if (!window.confirm('Are you sure you want to delete this user?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.delete(`http://localhost:5000/api/v1/users/${userId}`, {
+      const res = await api.delete(`/users/${userId}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
