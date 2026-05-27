@@ -21,7 +21,7 @@ const BlogsManager = () => {
   }, []);
 
   const fetchBlogs = () => {
-    axios.get('http://localhost:5000/api/v1/blogs')
+    axios.get(`${window.API_URL}/api/v1/blogs`)
       .then(res => {
         if (res.data.success) {
           setBlogs(res.data.data);
@@ -49,7 +49,7 @@ const BlogsManager = () => {
         formData.append('thumbnail', thumbnailFile);
       }
 
-      const res = await axios.post('http://localhost:5000/api/v1/blogs', formData, {
+      const res = await axios.post(`${window.API_URL}/api/v1/blogs`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -82,7 +82,7 @@ const BlogsManager = () => {
     if (!window.confirm('Delete this blog post?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`http://localhost:5000/api/v1/blogs/${id}`, {
+      await axios.delete(`${window.API_URL}/api/v1/blogs/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchBlogs();
@@ -195,7 +195,7 @@ const BlogsManager = () => {
                   <div className="w-16 h-10 bg-slate-800 rounded overflow-hidden shrink-0 flex items-center justify-center border border-slate-700">
                     {blog.thumbnail ? (
                       <img 
-                        src={blog.thumbnail.startsWith('http') ? blog.thumbnail : `http://localhost:5000${blog.thumbnail}`} 
+                        src={blog.thumbnail.startsWith('http') ? blog.thumbnail : `${window.API_URL}${blog.thumbnail}`} 
                         className="w-full h-full object-cover" 
                         alt="" 
                       />
