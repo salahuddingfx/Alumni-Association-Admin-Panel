@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api/api';
+import api, { API_URL } from '../api/api';
 import { Save, Plus, Trash, History, MessageSquare, AlertCircle, Layout, Upload, CheckCircle } from 'lucide-react';
 
 const CmsSettings = () => {
@@ -28,12 +28,12 @@ const CmsSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const welcomeRes = await api.get(`${window.API_URL}/api/v1/settings/welcome_text`);
+      const welcomeRes = await api.get(`${API_URL}/api/v1/settings/welcome_text`);
       if (welcomeRes.data.success && welcomeRes.data.data) {
         setWelcomeText(welcomeRes.data.data.welcomeText || '');
       }
 
-      const slidesRes = await api.get(`${window.API_URL}/api/v1/settings/hero_slides`);
+      const slidesRes = await api.get(`${API_URL}/api/v1/settings/hero_slides`);
       if (slidesRes.data.success && slidesRes.data.data && Array.isArray(slidesRes.data.data.slides)) {
         setSlides(slidesRes.data.data.slides);
       }
@@ -46,7 +46,7 @@ const CmsSettings = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await api.put(`${window.API_URL}/api/v1/settings/welcome_text`, {
+      const res = await api.put(`${API_URL}/api/v1/settings/welcome_text`, {
         value: { welcomeText }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -73,7 +73,7 @@ const CmsSettings = () => {
       // 1. Upload slide image file first
       const uploadData = new FormData();
       uploadData.append('image', slideImageFile);
-      const uploadRes = await api.post(`${window.API_URL}/api/v1/settings/upload`, uploadData, {
+      const uploadRes = await api.post(`${API_URL}/api/v1/settings/upload`, uploadData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -102,7 +102,7 @@ const CmsSettings = () => {
 
       const updatedSlides = [...slides, newSlide];
 
-      const res = await api.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
+      const res = await api.put(`${API_URL}/api/v1/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
         headers: { Authorization: `Bearer ${token}` }
@@ -136,7 +136,7 @@ const CmsSettings = () => {
     const updatedSlides = slides.filter((_, idx) => idx !== indexToDelete);
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await api.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
+      const res = await api.put(`${API_URL}/api/v1/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
         headers: { Authorization: `Bearer ${token}` }
