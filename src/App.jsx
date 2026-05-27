@@ -8,8 +8,11 @@ import GalleryManager from './pages/GalleryManager.jsx';
 import MemberApprovals from './pages/MemberApprovals.jsx';
 import UserManager from './pages/UserManager.jsx';
 import PaymentsManager from './pages/PaymentsManager.jsx';
+import CommitteeManager from './pages/CommitteeManager.jsx';
 import DonationsTracker from './pages/DonationsTracker.jsx';
 import CmsSettings from './pages/CmsSettings.jsx';
+import AboutManager from './pages/AboutManager.jsx';
+import BlogsManager from './pages/BlogsManager.jsx';
 import Login from './pages/Login.jsx';
 
 const App = () => {
@@ -37,13 +40,16 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Dashboard />} />
         <Route path="/notices" element={<NoticesManager />} />
+        <Route path="/blogs" element={<BlogsManager />} />
         <Route path="/events" element={<EventsManager />} />
         <Route path="/gallery" element={<GalleryManager />} />
         <Route path="/members" element={<MemberApprovals />} />
+        <Route path="/committee" element={<CommitteeManager />} />
         <Route path="/users" element={<UserManager />} />
         <Route path="/payments" element={<PaymentsManager />} />
         <Route path="/donations" element={<DonationsTracker />} />
         <Route path="/settings" element={<CmsSettings />} />
+        <Route path="/about-settings" element={<AboutManager />} />
       </Routes>
     </DashboardLayout>
   );

@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Plus, Trash, Image as ImageIcon } from 'lucide-react';
+import { Plus, Trash, Image as ImageIcon, Upload } from 'lucide-react';
 
 const GalleryManager = () => {
   const [items, setItems] = useState([]);
   const [titleEn, setTitleEn] = useState('');
   const [titleBn, setTitleBn] = useState('');
-  const [url, setUrl] = useState('');
+  const [imageFile, setImageFile] = useState(null);
   const [category, setCategory] = useState('reunion');
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     fetchItems();
@@ -26,28 +27,36 @@ const GalleryManager = () => {
   const handleCreate = async (e) => {
     e.preventDefault();
     try {
-      const payload = {
-        title: { en: titleEn, bn: titleBn },
-        url,
-        category,
-      };
+      const formData = new FormData();
+      formData.append('title', JSON.stringify({ en: titleEn, bn: titleBn }));
+      formData.append('category', category);
+      if (imageFile) {
+        formData.append('media', imageFile);
+      }
 
       const token = localStorage.getItem('accessToken');
-      const res = await axios.post('http://localhost:5000/api/v1/gallery', payload, {
-        headers: { Authorization: `Bearer ${token}` }
+      const res = await axios.post('http://localhost:5000/api/v1/gallery', formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
       });
       if (res.data.success) {
         setTitleEn('');
         setTitleBn('');
-        setUrl('');
+        setImageFile(null);
         fetchItems();
+        setMessage('Image uploaded successfully!');
+        setTimeout(() => setMessage(''), 3000);
       }
     } catch (err) {
       console.log(err);
+      alert(err.response?.data?.message || 'Failed to upload image');
     }
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm('Delete this gallery item?')) return;
     try {
       const token = localStorage.getItem('accessToken');
       await axios.delete(`http://localhost:5000/api/v1/gallery/${id}`, {
@@ -68,20 +77,37 @@ const GalleryManager = () => {
           <span>Upload Gallery Media</span>
         </h3>
 
+        {message && (
+          <div className="p-3 bg-emerald-500/10 text-emerald-400 text-xs font-semibold rounded-lg border border-emerald-500/20">
+            {message}
+          </div>
+        )}
+
         <form onSubmit={handleCreate} className="space-y-4 text-sm">
           <div>
             <label className="block text-slate-400 mb-1">Bengali Title</label>
-            <input type="text" className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded" value={titleBn} onChange={(e) => setTitleBn(e.target.value)} required />
+            <input type="text" className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100" value={titleBn} onChange={(e) => setTitleBn(e.target.value)} required />
           </div>
 
           <div>
             <label className="block text-slate-400 mb-1">English Title</label>
-            <input type="text" className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded" value={titleEn} onChange={(e) => setTitleEn(e.target.value)} required />
+            <input type="text" className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100" value={titleEn} onChange={(e) => setTitleEn(e.target.value)} required />
           </div>
 
-          <div>
-            <label className="block text-slate-400 mb-1">Image URL</label>
-            <input type="text" placeholder="https://unsplash.com/..." className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded" value={url} onChange={(e) => setUrl(e.target.value)} required />
+          {/* Photo File Selector */}
+          <div className="bg-slate-800/40 p-4 rounded-lg border border-dashed border-slate-700 text-center">
+            <label className="cursor-pointer block">
+              <Upload className="mx-auto text-secondary mb-2" size={20} />
+              <span className="text-xs font-bold text-slate-300 block uppercase">Upload Gallery Photo</span>
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={e => setImageFile(e.target.files[0])}
+                required
+              />
+            </label>
+            {imageFile && <span className="text-xs text-gray-500 font-semibold mt-1 block">Selected: {imageFile.name}</span>}
           </div>
 
           <div>
@@ -106,7 +132,7 @@ const GalleryManager = () => {
         <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-[500px]">
           {items.map(item => (
             <div key={item._id} className="relative group rounded overflow-hidden border border-slate-800 bg-slate-900">
-              <img src={item.url} className="w-full h-20 object-cover" alt="" />
+              <img src={item.url.startsWith('http') ? item.url : `http://localhost:5000${item.url}`} className="w-full h-20 object-cover" alt="" />
               <button
                 onClick={() => handleDelete(item._id)}
                 className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 p-1 rounded text-white opacity-0 group-hover:opacity-100 transition-opacity"
