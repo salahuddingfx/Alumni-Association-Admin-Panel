@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Save, Plus, Trash, History, MessageSquare, AlertCircle, Layout, Upload, CheckCircle } from 'lucide-react';
 
 const CmsSettings = () => {
@@ -28,12 +28,12 @@ const CmsSettings = () => {
 
   const fetchSettings = async () => {
     try {
-      const welcomeRes = await axios.get(`${window.API_URL}/api/v1/settings/welcome_text`);
+      const welcomeRes = await api.get(`/settings/welcome_text`);
       if (welcomeRes.data.success && welcomeRes.data.data) {
         setWelcomeText(welcomeRes.data.data.welcomeText || '');
       }
 
-      const slidesRes = await axios.get(`${window.API_URL}/api/v1/settings/hero_slides`);
+      const slidesRes = await api.get(`/settings/hero_slides`);
       if (slidesRes.data.success && slidesRes.data.data && Array.isArray(slidesRes.data.data.slides)) {
         setSlides(slidesRes.data.data.slides);
       }
@@ -46,34 +46,11 @@ const CmsSettings = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put(`${window.API_URL}/api/v1/settings/welcome_text`, {
+      const res = await api.put(`/settings/welcome_text`, {
         value: { welcomeText }
       }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.data.success) {
-        showSuccess('Homepage title updated successfully!');
-      }
-    } catch (err) {
-      showError('Failed to update welcome title');
-    }
-  };
-
-  const handleAddSlide = async (e) => {
-    e.preventDefault();
-    if (!slideImageFile) {
-      alert('Please select an image for the slide');
-      return;
-    }
-
-    try {
-      setUploadingSlide(true);
-      const token = localStorage.getItem('accessToken');
-
-      // 1. Upload slide image file first
-      const uploadData = new FormData();
-      uploadData.append('image', slideImageFile);
-      const uploadRes = await axios.post(`${window.API_URL}/api/v1/settings/upload`, uploadData, {
+        headers: { slideImageFile);
+      const uploadRes = await api.post(`/settings/upload`, uploadData, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -102,57 +79,16 @@ const CmsSettings = () => {
 
       const updatedSlides = [...slides, newSlide];
 
-      const res = await axios.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
+      const res = await api.put(`/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-
-      if (res.data.success) {
-        setSlides(updatedSlides);
-        setSlideImageFile(null);
-        setSlideImageFileName('');
-        setSlideTitleBn('');
-        setSlideTitleEn('');
-        setSlideSubtitleBn('');
-        setSlideSubtitleEn('');
-        setSlideBtnTextBn('');
-        setSlideBtnTextEn('');
-        setSlideBtnLink('');
-        setSlideHasCountdown(false);
-        setSlideHasDonation(false);
-        showSuccess('Slider image and configurations added successfully!');
-      }
-    } catch (err) {
-      console.log(err);
-      showError(err.response?.data?.message || 'Failed to save slide');
-    } finally {
-      setUploadingSlide(false);
-    }
-  };
-
-  const handleDeleteSlide = async (indexToDelete) => {
-    if (!window.confirm('Delete this slide from homepage slider?')) return;
-    const updatedSlides = slides.filter((_, idx) => idx !== indexToDelete);
+        headers: { idx) => idx !== indexToDelete);
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await axios.put(`${window.API_URL}/api/v1/settings/hero_slides`, {
+      const res = await api.put(`/settings/hero_slides`, {
         value: { slides: updatedSlides }
       }, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      if (res.data.success) {
-        setSlides(updatedSlides);
-        showSuccess('Slide deleted successfully!');
-      }
-    } catch (err) {
-      showError('Failed to delete slide');
-    }
-  };
-
-  const showSuccess = (msg) => {
-    setSuccess(msg);
-    setTimeout(() => setSuccess(''), 3500);
+        headers: { 3500);
   };
 
   const showError = (msg) => {
