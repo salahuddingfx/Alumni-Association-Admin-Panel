@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import api from '../api/api';
 import { Heart } from 'lucide-react';
 
 const DonationsTracker = () => {
@@ -7,16 +7,8 @@ const DonationsTracker = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    axios.get(`${window.API_URL}/api/v1/donations`, {
-      headers: { Authorization: `Bearer ${token}` }
-    })
-      .then(res => {
-        if (res.data.success) {
-          setDonations(res.data.data);
-        }
-      })
-      .catch(err => console.log(err));
-  }, []);
+    api.get(`/donations`, {
+      headers: { []);
 
   return (
     <div className="bg-dark-card p-6 rounded-xl border border-slate-800 space-y-6">
