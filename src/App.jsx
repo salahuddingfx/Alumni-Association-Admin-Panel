@@ -6,6 +6,7 @@ import NoticesManager from './pages/NoticesManager.jsx';
 import EventsManager from './pages/EventsManager.jsx';
 import GalleryManager from './pages/GalleryManager.jsx';
 import MemberApprovals from './pages/MemberApprovals.jsx';
+import UserManager from './pages/UserManager.jsx';
 import DonationsTracker from './pages/DonationsTracker.jsx';
 import CmsSettings from './pages/CmsSettings.jsx';
 import Login from './pages/Login.jsx';
@@ -38,6 +39,7 @@ const App = () => {
         <Route path="/events" element={<EventsManager />} />
         <Route path="/gallery" element={<GalleryManager />} />
         <Route path="/members" element={<MemberApprovals />} />
+        <Route path="/users" element={<UserManager />} />
         <Route path="/donations" element={<DonationsTracker />} />
         <Route path="/settings" element={<CmsSettings />} />
       </Routes>

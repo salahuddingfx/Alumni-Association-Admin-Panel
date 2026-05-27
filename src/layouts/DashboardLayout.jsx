@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield } from 'lucide-react';
 
 const DashboardLayout = ({ children }) => {
   const menuItems = [
@@ -9,6 +9,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/events', label: 'Events', icon: <Calendar size={18} /> },
     { path: '/gallery', label: 'Gallery', icon: <Image size={18} /> },
     { path: '/members', label: 'Member Approvals', icon: <Users size={18} /> },
+    { path: '/users', label: 'User Management', icon: <Shield size={18} /> },
     { path: '/donations', label: 'Donations', icon: <Heart size={18} /> },
     { path: '/settings', label: 'CMS Settings', icon: <Settings size={18} /> },
   ];
