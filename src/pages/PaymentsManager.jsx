@@ -6,28 +6,6 @@ const PaymentsManager = () => {
   const [registrations, setRegistrations] = useState([]);
   const [message, setMessage] = useState('');
 
-  const downloadImage = async (imageUrl, attendeeName, pscBatch) => {
-    try {
-      const response = await fetch(imageUrl);
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      
-      const sanitizedName = attendeeName.trim().replace(/[^a-zA-Z0-9_\u0980-\u09FF]/g, '_');
-      const sanitizedBatch = pscBatch.trim().replace(/[^a-zA-Z0-9_\u0980-\u09FF]/g, '_');
-      
-      link.download = `${sanitizedBatch}_${sanitizedName}_registration_photo.jpg`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('Error downloading image:', err);
-      window.open(imageUrl, '_blank');
-    }
-  };
-
   useEffect(() => {
     fetchRegistrations();
   }, []);
@@ -81,7 +59,7 @@ const PaymentsManager = () => {
         <table className="w-full text-sm text-left text-slate-300">
           <thead className="text-xs uppercase bg-slate-800 text-slate-400">
             <tr>
-              <th className="px-6 py-3">Attendee / Photo</th>
+              <th className="px-6 py-3">Attendee</th>
               <th className="px-6 py-3">Event</th>
               <th className="px-6 py-3">Type</th>
               <th className="px-6 py-3">Status</th>
@@ -93,36 +71,9 @@ const PaymentsManager = () => {
               registrations.map(reg => (
                 <tr key={reg._id} className="border-b border-slate-800 hover:bg-slate-850">
                   <td className="px-6 py-4">
-                    <div className="flex items-center space-x-3">
-                      {reg.userImage ? (
-                        <div className="relative group shrink-0">
-                          <img
-                            src={reg.userImage}
-                            alt={reg.fullName}
-                            className="w-12 h-12 object-cover rounded-lg border border-slate-700 cursor-pointer hover:border-secondary transition-all"
-                            onClick={() => window.open(reg.userImage, '_blank')}
-                          />
-                          <button
-                            onClick={() => downloadImage(reg.userImage, reg.fullName, reg.pscBatch)}
-                            className="absolute -bottom-1 -right-1 bg-secondary text-primary rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity shadow-lg"
-                            title="Download with marked filename"
-                          >
-                            <svg className="w-3 h-3 fill-current text-slate-900" viewBox="0 0 24 24" width="12" height="12">
-                              <path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/>
-                            </svg>
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-lg bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-500 font-bold shrink-0 text-[10px]">
-                          No Photo
-                        </div>
-                      )}
-                      <div>
-                        <div className="font-bold text-slate-200">{reg.fullName}</div>
-                        <div className="text-xs text-gray-500">{reg.email}</div>
-                        <div className="text-[10px] text-slate-400">Phone: {reg.contactNumber}</div>
-                      </div>
-                    </div>
+                    <div className="font-bold text-slate-200">{reg.fullName}</div>
+                    <div className="text-xs text-gray-500">{reg.email}</div>
+                    <div className="text-[10px] text-slate-400">Phone: {reg.contactNumber}</div>
                   </td>
                   <td className="px-6 py-4">
                     <div className="text-xs font-bold text-slate-200 font-bn">
