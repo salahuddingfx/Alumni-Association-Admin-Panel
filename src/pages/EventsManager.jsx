@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api/api';
+import axios from 'axios';
 import { Calendar, Plus, Trash } from 'lucide-react';
 
 const EventsManager = () => {
@@ -18,7 +18,7 @@ const EventsManager = () => {
   }, []);
 
   const fetchEvents = () => {
-    api.get(`${window.API_URL}/api/v1/events`)
+    axios.get('http://localhost:5000/api/v1/events')
       .then(res => {
         if (res.data.success) {
           setEvents(res.data.data);
@@ -39,7 +39,7 @@ const EventsManager = () => {
       };
 
       const token = localStorage.getItem('accessToken');
-      const res = await api.post(`${window.API_URL}/api/v1/events`, payload, {
+      const res = await axios.post('http://localhost:5000/api/v1/events', payload, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (res.data.success) {
@@ -60,7 +60,7 @@ const EventsManager = () => {
   const handleDelete = async (id) => {
     try {
       const token = localStorage.getItem('accessToken');
-      await api.delete(`${window.API_URL}/api/v1/events/${id}`, {
+      await axios.delete(`http://localhost:5000/api/v1/events/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchEvents();

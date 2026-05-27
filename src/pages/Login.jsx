@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { KeyRound, Mail, LogIn, Eye, EyeOff } from 'lucide-react';
-import api from '../api/api';
+import axios from 'axios';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -13,7 +13,7 @@ const Login = () => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await api.post(`${window.API_URL}/api/v1/auth/login`, {
+      const res = await axios.post('http://localhost:5000/api/v1/auth/login', {
         identifier,
         password,
       });

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import api from '../api/api';
+import axios from 'axios';
 import { CreditCard, CheckCircle, XCircle, AlertCircle } from 'lucide-react';
 
 const PaymentsManager = () => {
@@ -12,7 +12,7 @@ const PaymentsManager = () => {
 
   const fetchRegistrations = () => {
     const token = localStorage.getItem('accessToken');
-    api.get(`${window.API_URL}/api/v1/events/admin/registrations`, {
+    axios.get('http://localhost:5000/api/v1/events/admin/registrations', {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
@@ -26,7 +26,7 @@ const PaymentsManager = () => {
   const handleUpdateStatus = async (regId, status) => {
     try {
       const token = localStorage.getItem('accessToken');
-      const res = await api.put(`${window.API_URL}/api/v1/events/admin/registrations/${regId}/payment-status`, 
+      const res = await axios.put(`http://localhost:5000/api/v1/events/admin/registrations/${regId}/payment-status`, 
         { paymentStatus: status },
         { headers: { Authorization: `Bearer ${token}` } }
       );
