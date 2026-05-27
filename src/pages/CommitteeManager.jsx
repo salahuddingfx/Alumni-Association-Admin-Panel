@@ -20,7 +20,7 @@ const CommitteeManager = () => {
   }, []);
 
   const fetchMembers = () => {
-    axios.get('http://localhost:5000/api/v1/committees')
+    axios.get(`${window.API_URL}/api/v1/committees`)
       .then(res => {
         if (res.data.success) {
           setMembers(res.data.data);
@@ -43,7 +43,7 @@ const CommitteeManager = () => {
         formData.append('image', imageFile);
       }
 
-      const res = await axios.post('http://localhost:5000/api/v1/committees', formData, {
+      const res = await axios.post(`${window.API_URL}/api/v1/committees`, formData, {
         headers: { 
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data'
@@ -73,7 +73,7 @@ const CommitteeManager = () => {
     if (!window.confirm('Delete this member from the committee?')) return;
     try {
       const token = localStorage.getItem('accessToken');
-      await axios.delete(`http://localhost:5000/api/v1/committees/${id}`, {
+      await axios.delete(`${window.API_URL}/api/v1/committees/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       fetchMembers();
@@ -184,7 +184,7 @@ const CommitteeManager = () => {
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-slate-800 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-slate-750">
                     {member.image ? (
-                      <img src={member.image.startsWith('http') ? member.image : `http://localhost:5000${member.image}`} className="w-full h-full object-cover" alt="" />
+                      <img src={member.image.startsWith('http') ? member.image : `${window.API_URL}${member.image}`} className="w-full h-full object-cover" alt="" />
                     ) : (
                       <span className="font-extrabold text-sm text-slate-400 uppercase">{member.name.en[0]}</span>
                     )}
