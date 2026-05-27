@@ -7,7 +7,7 @@ const DonationsTracker = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-    axios.get('http://localhost:5000/api/v1/donations', {
+    axios.get(`${window.API_URL}/api/v1/donations`, {
       headers: { Authorization: `Bearer ${token}` }
     })
       .then(res => {
