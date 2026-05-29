@@ -214,7 +214,7 @@ const MemberApprovals = () => {
             <div className="flex items-center justify-between mb-2">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center space-x-1">
                 <Filter size={11} className="text-secondary" />
-                <span>Filter by SSC Batch (Multi-Select)</span>
+                <span>Filter by PSC Batch (Multi-Select)</span>
               </span>
               {selectedBatches.length > 0 && (
                 <button
@@ -260,7 +260,7 @@ const MemberApprovals = () => {
               <thead className="text-xs uppercase bg-slate-800/60 text-slate-400 border-b border-slate-700">
                 <tr>
                   <th className="px-6 py-3.5">Name</th>
-                  <th className="px-6 py-3.5">SSC Batch</th>
+                  <th className="px-6 py-3.5">PSC Batch</th>
                   <th className="px-6 py-3.5">Status</th>
                   <th className="px-6 py-3.5">Profession</th>
                   <th className="px-6 py-3.5">Email</th>
@@ -425,12 +425,8 @@ const MemberApprovals = () => {
               <h5 className="text-xs uppercase font-extrabold tracking-wider text-gray-500">Academic Details</h5>
               <div className="grid grid-cols-2 gap-4 bg-slate-900/30 p-4 rounded-xl border border-slate-800/60 text-sm">
                 <div>
-                  <span className="text-gray-500 text-xxs uppercase block">SSC Batch</span>
-                  <span className="text-slate-200 font-semibold">Batch {selectedMember.batch || 'N/A'}</span>
-                </div>
-                <div>
                   <span className="text-gray-500 text-xxs uppercase block">PSC Batch</span>
-                  <span className="text-slate-200 font-semibold">{selectedMember.pscBatch || 'N/A'}</span>
+                  <span className="text-slate-200 font-semibold">Batch {selectedMember.pscBatch || selectedMember.batch || 'N/A'}</span>
                 </div>
                 <div>
                   <span className="text-gray-500 text-xxs uppercase block">Blood Group</span>

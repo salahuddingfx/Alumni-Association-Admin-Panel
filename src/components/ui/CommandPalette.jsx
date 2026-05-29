@@ -81,7 +81,7 @@ const CommandPalette = ({ isOpen, onClose }) => {
         if (res.data && res.data.success && Array.isArray(res.data.data)) {
           const list = res.data.data.map(m => ({
             id: `member-${m._id}`,
-            label: `Member: ${m.name} (Batch: ${m.sscBatch || 'N/A'})`,
+            label: `Member: ${m.name} (PSC Batch: ${m.pscBatch || m.batch || 'N/A'})`,
             path: `/members`,
             icon: <Users size={16} className="text-accent" />,
             category: 'Alumni Directory Match'
