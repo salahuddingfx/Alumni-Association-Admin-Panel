@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera, Search } from 'lucide-react';
+import CommandPalette from '../components/ui/CommandPalette.jsx';
 
 const DashboardLayout = ({ children }) => {
+  const [isPaletteOpen, setIsPaletteOpen] = useState(false);
+
   const menuItems = [
     { path: '/', label: 'Dashboard', icon: <LayoutDashboard size={18} /> },
     { path: '/notices', label: 'Notices', icon: <FileText size={18} /> },
@@ -18,6 +21,18 @@ const DashboardLayout = ({ children }) => {
     { path: '/settings', label: 'CMS Settings', icon: <Settings size={18} /> },
     { path: '/about-settings', label: 'About Page CMS', icon: <History size={18} /> },
   ];
+
+  // Listen for Ctrl+K / Cmd+K key bindings globally in admin
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('accessToken');
@@ -39,6 +54,9 @@ const DashboardLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen flex bg-dark-bg text-slate-100 font-english">
+      {/* Command Palette Overlay */}
+      <CommandPalette isOpen={isPaletteOpen} onClose={() => setIsPaletteOpen(false)} />
+
       {/* Sidebar */}
       <aside className="w-64 bg-dark-card border-r border-slate-800 flex flex-col justify-between shrink-0">
         <div>
@@ -90,7 +108,18 @@ const DashboardLayout = ({ children }) => {
       <div className="flex-1 flex flex-col min-w-0">
         {/* Topbar */}
         <header className="h-20 border-b border-slate-800 px-8 flex items-center justify-between bg-dark-card">
-          <h2 className="text-xl font-bold text-slate-100">Control Panel</h2>
+          <div className="flex items-center space-x-4">
+            <h2 className="text-xl font-bold text-slate-100 mr-4">Control Panel</h2>
+            {/* Quick Command Trigger search */}
+            <button 
+              onClick={() => setIsPaletteOpen(true)}
+              className="flex items-center space-x-2 px-3 py-1.5 rounded-lg bg-slate-800/60 border border-slate-700/80 hover:bg-slate-800 hover:border-slate-600 transition text-gray-400 text-xs font-semibold"
+            >
+              <Search size={14} />
+              <span>Search actions...</span>
+              <kbd className="bg-slate-900 border border-slate-700 px-1 py-0.5 rounded text-[9px] font-mono ml-2">Ctrl+K</kbd>
+            </button>
+          </div>
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase border border-slate-600">
               {initial}
