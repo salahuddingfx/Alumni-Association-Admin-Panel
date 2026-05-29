@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
 import { Plus, Trash, Users, Upload, Edit, X } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 const CommitteeManager = () => {
   const [members, setMembers] = useState([]);
@@ -265,7 +266,7 @@ const CommitteeManager = () => {
                 <div className="flex items-center space-x-3">
                   <div className="w-12 h-12 bg-slate-800 rounded-lg overflow-hidden shrink-0 flex items-center justify-center border border-slate-750">
                     {member.image ? (
-                      <img src={member.image.startsWith('http') ? member.image : `${API_URL}${member.image}`} className="w-full h-full object-cover" alt="" />
+                      <img src={getImageUrl(member.image)} className="w-full h-full object-cover" alt="" />
                     ) : (
                       <span className="font-extrabold text-sm text-slate-400 uppercase">{member.name.en[0]}</span>
                     )}
