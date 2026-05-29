@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera, Search } from 'lucide-react';
+import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera, Search, Handshake } from 'lucide-react';
 import CommandPalette from '../components/ui/CommandPalette.jsx';
 import api from '../api/api';
 import { getImageUrl } from '../utils/image';
@@ -21,6 +21,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/registration-photos', label: 'Registration Photos', icon: <Camera size={18} /> },
     { path: '/checkin', label: 'Gate Check-In', icon: <Camera size={18} /> },
     { path: '/donations', label: 'Donations', icon: <Heart size={18} /> },
+    { path: '/partners', label: 'Partners & Sponsors', icon: <Handshake size={18} /> },
     { path: '/settings', label: 'CMS Settings', icon: <Settings size={18} /> },
     { path: '/about-settings', label: 'About Page CMS', icon: <History size={18} /> },
   ];
