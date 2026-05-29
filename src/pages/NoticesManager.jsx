@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../api/api';
 import { convertBanglishToBengali } from '../utils/banglish';
-import { Send, Globe, Plus, Trash } from 'lucide-react';
+import { Send, Globe, Plus, Trash, Edit, X } from 'lucide-react';
 
 const NoticesManager = () => {
   const [notices, setNotices] = useState([]);
+  const [editingNotice, setEditingNotice] = useState(null);
   const [titleEn, setTitleEn] = useState('');
   const [titleBn, setTitleBn] = useState('');
   const [contentEn, setContentEn] = useState('');
@@ -59,6 +60,7 @@ const NoticesManager = () => {
         setContentEn('');
         setContentBn('');
         setIsSticky(false);
+        setPriority('medium');
         fetchNotices();
       }
     } catch (err) {
@@ -66,7 +68,64 @@ const NoticesManager = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        title: { en: titleEn, bn: titleBn },
+        content: { en: contentEn, bn: contentBn },
+        priority,
+        isSticky,
+      };
+
+      const token = localStorage.getItem('accessToken');
+      const res = await api.put(`/notices/${editingNotice._id}`, payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+
+      if (res.data.success) {
+        setMessage('Notice updated successfully');
+        setEditingNotice(null);
+        setTitleEn('');
+        setTitleBn('');
+        setBanglishInput('');
+        setContentEn('');
+        setContentBn('');
+        setIsSticky(false);
+        setPriority('medium');
+        fetchNotices();
+      }
+    } catch (err) {
+      setMessage(err.response?.data?.message || 'Failed to update notice');
+    }
+  };
+
+  const startEdit = (notice) => {
+    setEditingNotice(notice);
+    setTitleEn(notice.title?.en || '');
+    setTitleBn(notice.title?.bn || '');
+    setBanglishInput('');
+    setContentEn(notice.content?.en || '');
+    setContentBn(notice.content?.bn || '');
+    setPriority(notice.priority || 'medium');
+    setIsSticky(notice.isSticky || false);
+    setMessage('');
+  };
+
+  const cancelEdit = () => {
+    setEditingNotice(null);
+    setTitleEn('');
+    setTitleBn('');
+    setBanglishInput('');
+    setContentEn('');
+    setContentBn('');
+    setPriority('medium');
+    setIsSticky(false);
+    setMessage('');
+  };
+
   const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this notice?')) return;
     try {
       const token = localStorage.getItem('accessToken');
       const res = await api.delete(`/notices/${id}`, {
@@ -82,11 +141,11 @@ const NoticesManager = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-      {/* Create notice form */}
+      {/* Create / Edit notice form */}
       <div className="bg-dark-card p-6 rounded-xl border border-slate-800 space-y-6">
         <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
-          <Plus size={20} className="text-secondary" />
-          <span>Publish New Notice</span>
+          {editingNotice ? <Edit size={20} className="text-secondary" /> : <Plus size={20} className="text-secondary" />}
+          <span>{editingNotice ? 'Edit Notice Details' : 'Publish New Notice'}</span>
         </h3>
 
         {message && (
@@ -95,7 +154,7 @@ const NoticesManager = () => {
           </div>
         )}
 
-        <form onSubmit={handleCreate} className="space-y-4">
+        <form onSubmit={editingNotice ? handleUpdate : handleCreate} className="space-y-4">
           {/* Smart Banglish Input */}
           <div className="bg-slate-900/60 p-4 rounded-lg border border-slate-800 space-y-2">
             <span className="block text-xs font-bold text-secondary uppercase">⌨️ Smart Banglish Keyboard</span>
@@ -182,13 +241,25 @@ const NoticesManager = () => {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full bg-secondary hover:bg-yellow-500 text-white font-bold py-2.5 rounded shadow-lg transition text-sm flex items-center justify-center space-x-2"
-          >
-            <Send size={16} />
-            <span>Publish Notice</span>
-          </button>
+          <div className="flex space-x-3 pt-2">
+            {editingNotice && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1.5 text-sm"
+              >
+                <X size={16} />
+                <span>Cancel</span>
+              </button>
+            )}
+            <button
+              type="submit"
+              className="flex-1 bg-secondary hover:bg-yellow-500 text-white font-bold py-2.5 rounded shadow-lg transition text-sm flex items-center justify-center space-x-2"
+            >
+              {editingNotice ? <Edit size={16} /> : <Send size={16} />}
+              <span>{editingNotice ? 'Save Changes' : 'Publish Notice'}</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -211,12 +282,22 @@ const NoticesManager = () => {
                 <h4 className="font-bold text-slate-200 font-bn">{notice.title.bn}</h4>
                 <p className="text-xs text-gray-500 font-bn mt-1 line-clamp-1">{notice.content.bn}</p>
               </div>
-              <button
-                onClick={() => handleDelete(notice._id)}
-                className="text-slate-500 hover:text-red-400 transition"
-              >
-                <Trash size={16} />
-              </button>
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={() => startEdit(notice)}
+                  className="text-slate-400 hover:text-secondary transition p-1"
+                  title="Edit Notice"
+                >
+                  <Edit size={16} />
+                </button>
+                <button
+                  onClick={() => handleDelete(notice._id)}
+                  className="text-slate-500 hover:text-red-400 transition p-1"
+                  title="Delete Notice"
+                >
+                  <Trash size={16} />
+                </button>
+              </div>
             </div>
           ))}
         </div>
