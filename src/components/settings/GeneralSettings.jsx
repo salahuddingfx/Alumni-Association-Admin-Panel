@@ -13,10 +13,7 @@ const GeneralSettings = ({
   facebook, setFacebook,
   linkedin, setLinkedin,
   youtube, setYoutube,
-  introVideoUrl, setIntroVideoUrl,
-  bkash, setBkash,
-  nagad, setNagad,
-  rocket, setRocket
+  introVideoUrl, setIntroVideoUrl
 }) => {
   return (
     <div className="bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
@@ -161,38 +158,6 @@ const GeneralSettings = ({
             value={introVideoUrl}
             onChange={(e) => setIntroVideoUrl(e.target.value)}
             placeholder="https://www.youtube.com/watch?v=... or https://facebook.com/watch/?v=... or Cloudinary link"
-          />
-        </div>
-
-        {/* Payment Numbers */}
-        <div>
-          <label className="block text-slate-400 mb-1">bKash Personal Number</label>
-          <input
-            type="text"
-            className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100 text-sm"
-            value={bkash}
-            onChange={(e) => setBkash(e.target.value)}
-            placeholder="e.g. +88017XXXXXXXX"
-          />
-        </div>
-        <div>
-          <label className="block text-slate-400 mb-1">Nagad Personal Number</label>
-          <input
-            type="text"
-            className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100 text-sm"
-            value={nagad}
-            onChange={(e) => setNagad(e.target.value)}
-            placeholder="e.g. +88018XXXXXXXX"
-          />
-        </div>
-        <div>
-          <label className="block text-slate-400 mb-1">Rocket Personal Number</label>
-          <input
-            type="text"
-            className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100 text-sm"
-            value={rocket}
-            onChange={(e) => setRocket(e.target.value)}
-            placeholder="e.g. +88019XXXXXXXX"
           />
         </div>
       </div>
