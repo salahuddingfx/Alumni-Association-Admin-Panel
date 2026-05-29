@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
 import { Plus, Trash, Users, Upload, Edit, X } from 'lucide-react';
 import { getImageUrl } from '../utils/image';
+import useConfirm from '../hooks/useConfirm';
 
 const CommitteeManager = () => {
   const [members, setMembers] = useState([]);
+  const { confirmDialog, openConfirm } = useConfirm();
   const [editingMember, setEditingMember] = useState(null);
   const [nameEn, setNameEn] = useState('');
   const [nameBn, setNameBn] = useState('');
@@ -72,7 +74,7 @@ const CommitteeManager = () => {
       }
     } catch (err) {
       console.log(err);
-      alert(err.response?.data?.message || 'Failed to create member');
+      setMessage(err.response?.data?.message || 'Failed to create member');
     }
   };
 
@@ -120,7 +122,7 @@ const CommitteeManager = () => {
       }
     } catch (err) {
       console.log(err);
-      alert(err.response?.data?.message || 'Failed to update member');
+      setMessage(err.response?.data?.message || 'Failed to update member');
     }
   };
 
@@ -156,7 +158,13 @@ const CommitteeManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this member from the committee?')) return;
+    const confirmed = await openConfirm({
+      title: 'Delete Committee Member?',
+      message: 'This person will be permanently removed from the committee roster.',
+      type: 'danger',
+      confirmLabel: 'Yes, Delete',
+    });
+    if (!confirmed) return;
     try {
       const token = localStorage.getItem('accessToken');
       await api.delete(`${API_URL}/api/v1/committees/${id}`, {
@@ -172,6 +180,7 @@ const CommitteeManager = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {confirmDialog}
       {/* Create / Edit form - 5 Cols */}
       <div className="lg:col-span-5 bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
         <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
