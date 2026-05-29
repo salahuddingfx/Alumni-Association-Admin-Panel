@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera, Search } from 'lucide-react';
 import CommandPalette from '../components/ui/CommandPalette.jsx';
+import api, { API_URL } from '../api/api';
 
 const DashboardLayout = ({ children }) => {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
@@ -41,17 +42,39 @@ const DashboardLayout = ({ children }) => {
     window.location.href = '/login';
   };
 
-  const userString = localStorage.getItem('user');
-  let user = null;
-  try {
-    user = userString ? JSON.parse(userString) : null;
-  } catch (e) {
-    console.error(e);
-  }
+  const [currentUser, setCurrentUser] = useState(() => {
+    const userString = localStorage.getItem('user');
+    try {
+      return userString ? JSON.parse(userString) : null;
+    } catch (e) {
+      console.error(e);
+      return null;
+    }
+  });
+  const [avatarError, setAvatarError] = useState(false);
 
-  const initial = user?.username ? user.username.charAt(0).toUpperCase() : (user?.email ? user.email.charAt(0).toUpperCase() : 'A');
-  const roleName = user?.role ? user.role.toUpperCase() : 'ADMINISTRATOR';
-  const displayName = user?.username || user?.email || 'Admin User';
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await api.get('/auth/me');
+        if (res.data.success && res.data.data.user) {
+          const freshUser = res.data.data.user;
+          setCurrentUser(freshUser);
+          localStorage.setItem('user', JSON.stringify(freshUser));
+        }
+      } catch (err) {
+        console.error('Error fetching profile:', err);
+      }
+    };
+    fetchProfile();
+  }, []);
+
+  const initial = currentUser?.username ? currentUser.username.charAt(0).toUpperCase() : (currentUser?.email ? currentUser.email.charAt(0).toUpperCase() : 'A');
+  const roleName = currentUser?.role ? currentUser.role.toUpperCase() : 'ADMINISTRATOR';
+  const displayName = currentUser?.fullName || currentUser?.username || currentUser?.email || 'Admin User';
+  const avatarUrl = currentUser?.profilePhoto 
+    ? (currentUser.profilePhoto.startsWith('http') ? currentUser.profilePhoto : `${API_URL}${currentUser.profilePhoto}`)
+    : null;
 
   return (
     <div className="min-h-screen flex bg-dark-bg text-slate-100 font-english">
@@ -128,9 +151,18 @@ const DashboardLayout = ({ children }) => {
             </button>
           </div>
           <div className="flex items-center space-x-3 bg-slate-800/40 pl-3 pr-4 py-1.5 rounded-full border border-slate-800/80 hover:border-slate-700/80 transition-all duration-200">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-slate-800 flex items-center justify-center text-xs font-bold text-slate-100 uppercase border border-slate-700 shadow-md shrink-0">
-              {initial}
-            </div>
+            {avatarUrl && !avatarError ? (
+              <img 
+                src={avatarUrl} 
+                className="w-8 h-8 rounded-full object-cover border border-slate-700 shadow-md shrink-0 animate-fade-in" 
+                alt={displayName} 
+                onError={() => setAvatarError(true)}
+              />
+            ) : (
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-slate-800 flex items-center justify-center text-xs font-bold text-slate-100 uppercase border border-slate-700 shadow-md shrink-0">
+                {initial}
+              </div>
+            )}
             <div className="flex flex-col text-left min-w-0">
               <span className="text-xs font-bold text-slate-200 truncate max-w-[120px]">{displayName}</span>
               <span className="text-[9px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">{roleName}</span>
