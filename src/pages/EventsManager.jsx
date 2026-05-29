@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/api';
-import { Calendar, Plus, Trash } from 'lucide-react';
+import { Calendar, Plus, Trash, Edit, X } from 'lucide-react';
 
 const EventsManager = () => {
   const [events, setEvents] = useState([]);
+  const [editingEvent, setEditingEvent] = useState(null);
+  
   const [titleEn, setTitleEn] = useState('');
   const [titleBn, setTitleBn] = useState('');
   const [descEn, setDescEn] = useState('');
@@ -57,7 +59,71 @@ const EventsManager = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const payload = {
+        title: { en: titleEn, bn: titleBn },
+        description: { en: descEn, bn: descBn },
+        location: { en: locEn, bn: locBn },
+        date,
+        category,
+      };
+
+      const token = localStorage.getItem('accessToken');
+      const res = await api.put(`/events/${editingEvent._id}`, payload, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.data.success) {
+        setEditingEvent(null);
+        setTitleEn('');
+        setTitleBn('');
+        setDescEn('');
+        setDescBn('');
+        setDate('');
+        setLocEn('');
+        setLocBn('');
+        fetchEvents();
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const startEdit = (event) => {
+    setEditingEvent(event);
+    setTitleEn(event.title?.en || '');
+    setTitleBn(event.title?.bn || '');
+    setDescEn(event.description?.en || '');
+    setDescBn(event.description?.bn || '');
+    if (event.date) {
+      const d = new Date(event.date);
+      // Format to YYYY-MM-DDTHH:MM local time
+      const tzOffset = d.getTimezoneOffset() * 60000;
+      const localISODate = (new Date(d.getTime() - tzOffset)).toISOString().slice(0, 16);
+      setDate(localISODate);
+    } else {
+      setDate('');
+    }
+    setLocEn(event.location?.en || '');
+    setLocBn(event.location?.bn || '');
+    setCategory(event.category || 'reunion');
+  };
+
+  const cancelEdit = () => {
+    setEditingEvent(null);
+    setTitleEn('');
+    setTitleBn('');
+    setDescEn('');
+    setDescBn('');
+    setDate('');
+    setLocEn('');
+    setLocBn('');
+    setCategory('reunion');
+  };
+
   const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this event?')) return;
     try {
       const token = localStorage.getItem('accessToken');
       await api.delete(`/events/${id}`, {
