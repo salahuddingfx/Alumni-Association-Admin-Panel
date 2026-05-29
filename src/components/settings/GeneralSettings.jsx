@@ -153,6 +153,16 @@ const GeneralSettings = ({
             placeholder="https://youtube.com/channel/..."
           />
         </div>
+        <div>
+          <label className="block text-slate-400 mb-1">Intro Video URL (YouTube, Facebook, or Cloudinary)</label>
+          <input
+            type="url"
+            className="w-full bg-slate-800 border border-slate-700 px-3 py-2 rounded text-slate-100 text-sm"
+            value={introVideoUrl}
+            onChange={(e) => setIntroVideoUrl(e.target.value)}
+            placeholder="https://www.youtube.com/watch?v=... or https://facebook.com/watch/?v=... or Cloudinary link"
+          />
+        </div>
 
         {/* Payment Numbers */}
         <div>
