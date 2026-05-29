@@ -4,7 +4,6 @@ import { Save, AlertCircle } from 'lucide-react';
 import WelcomeSettings from '../components/settings/WelcomeSettings.jsx';
 import SliderSettings from '../components/settings/SliderSettings.jsx';
 import GeneralSettings from '../components/settings/GeneralSettings.jsx';
-import EventFeesSettings from '../components/settings/EventFeesSettings.jsx';
 
 const CmsSettings = () => {
   const [welcomeText, setWelcomeText] = useState('স্বাগতম প্রাক্তন পরিষদে');
@@ -25,13 +24,7 @@ const CmsSettings = () => {
   const [linkedin, setLinkedin] = useState('https://linkedin.com');
   const [youtube, setYoutube] = useState('https://youtube.com');
   const [introVideoUrl, setIntroVideoUrl] = useState('https://www.youtube.com/embed/9ycVq2kU7L0');
-  const [bkash, setBkash] = useState('+880 1700 000000');
-  const [nagad, setNagad] = useState('+880 1800 000000');
-  const [rocket, setRocket] = useState('+880 1900 000000');
-  const [eventDefaultFee, setEventDefaultFee] = useState(1500);
-  const [eventBatchFees, setEventBatchFees] = useState([]);
-  const [digitalFeeType, setDigitalFeeType] = useState('percentage');
-  const [digitalFeeValue, setDigitalFeeValue] = useState(2);
+
 
   // Add slide state
   const [slideImageFile, setSlideImageFile] = useState(null);
@@ -69,13 +62,6 @@ const CmsSettings = () => {
         setLinkedin(val.linkedin || '');
         setYoutube(val.youtube || '');
         setIntroVideoUrl(val.introVideoUrl || '');
-        setBkash(val.bkash || '');
-        setNagad(val.nagad || '');
-        setRocket(val.rocket || '');
-        setEventDefaultFee(val.eventDefaultFee || 1500);
-        setEventBatchFees(val.eventBatchFees || []);
-        setDigitalFeeType(val.digitalFeeType || 'percentage');
-        setDigitalFeeValue(val.digitalFeeValue ?? 2);
       }
     } catch (err) {
       console.log('Error fetching general settings:', err);
@@ -86,28 +72,29 @@ const CmsSettings = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem('accessToken');
+      
+      // Fetch current general settings to merge payments and fees and prevent overwrites
+      const getRes = await api.get(`${API_URL}/api/v1/settings/general_settings`);
+      const existingValue = getRes.data.success && getRes.data.data ? getRes.data.data : {};
+
+      const newValue = {
+        ...existingValue,
+        schoolNameEn,
+        schoolNameBn,
+        siteTitleEn,
+        siteTitleBn,
+        email,
+        phone,
+        addressEn,
+        addressBn,
+        facebook,
+        linkedin,
+        youtube,
+        introVideoUrl
+      };
+
       const res = await api.put(`${API_URL}/api/v1/settings/general_settings`, {
-        value: {
-          schoolNameEn,
-          schoolNameBn,
-          siteTitleEn,
-          siteTitleBn,
-          email,
-          phone,
-          addressEn,
-          addressBn,
-          facebook,
-          linkedin,
-          youtube,
-          introVideoUrl,
-          bkash,
-          nagad,
-          rocket,
-          eventDefaultFee: Number(eventDefaultFee),
-          eventBatchFees: eventBatchFees.map(f => ({ batches: f.batches, fee: Number(f.fee) })),
-          digitalFeeType,
-          digitalFeeValue: Number(digitalFeeValue)
-        }
+        value: newValue
       }, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -300,7 +287,7 @@ const CmsSettings = () => {
           uploadingSlide={uploadingSlide}
         />
 
-        {/* Combined configuration form for Organization & Fees */}
+        {/* Combined configuration form for Organization */}
         <div className="bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
           <form onSubmit={handleSaveGeneralSettings} className="space-y-4">
             <GeneralSettings
@@ -316,16 +303,6 @@ const CmsSettings = () => {
               linkedin={linkedin} setLinkedin={setLinkedin}
               youtube={youtube} setYoutube={setYoutube}
               introVideoUrl={introVideoUrl} setIntroVideoUrl={setIntroVideoUrl}
-              bkash={bkash} setBkash={setBkash}
-              nagad={nagad} setNagad={setNagad}
-              rocket={rocket} setRocket={setRocket}
-            />
-
-            <EventFeesSettings
-              eventDefaultFee={eventDefaultFee} setEventDefaultFee={setEventDefaultFee}
-              eventBatchFees={eventBatchFees} setEventBatchFees={setEventBatchFees}
-              digitalFeeType={digitalFeeType} setDigitalFeeType={setDigitalFeeType}
-              digitalFeeValue={digitalFeeValue} setDigitalFeeValue={setDigitalFeeValue}
             />
 
             <div className="pt-2">
@@ -334,7 +311,7 @@ const CmsSettings = () => {
                 className="bg-secondary hover:bg-yellow-500 text-white font-bold px-6 py-2.5 rounded shadow transition flex items-center space-x-1.5 text-xs uppercase tracking-wider"
               >
                 <Save size={14} />
-                <span>Save General & Fee Settings</span>
+                <span>Save General Settings</span>
               </button>
             </div>
           </form>
