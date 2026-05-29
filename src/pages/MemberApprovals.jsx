@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import api, { API_URL } from '../api/api';
+import api from '../api/api';
+import { getImageUrl } from '../utils/image';
 import { UserCheck, UserX, Eye, Trash, Mail, Phone, ShieldCheck, Search, Filter, X } from 'lucide-react';
 import SlideOverDrawer from '../components/ui/SlideOverDrawer.jsx';
 
@@ -279,7 +280,7 @@ const MemberApprovals = () => {
                           <div className="w-9 h-9 rounded-full bg-slate-700/60 flex items-center justify-center font-bold text-white text-sm border border-slate-600 overflow-hidden shrink-0">
                             {member.profilePhoto ? (
                               <img 
-                                src={member.profilePhoto.startsWith('http') ? member.profilePhoto : `${API_URL}${member.profilePhoto}`} 
+                                src={getImageUrl(member.profilePhoto)} 
                                 alt={member.name.en} 
                                 className="w-full h-full object-cover" 
                               />
@@ -386,7 +387,7 @@ const MemberApprovals = () => {
               <div className="w-24 h-24 rounded-full bg-slate-700 flex items-center justify-center font-bold text-white text-3xl border-2 border-primary shadow-lg overflow-hidden shrink-0">
                 {selectedMember.profilePhoto ? (
                   <img 
-                    src={selectedMember.profilePhoto.startsWith('http') ? selectedMember.profilePhoto : `${API_URL}${selectedMember.profilePhoto}`} 
+                    src={getImageUrl(selectedMember.profilePhoto)} 
                     alt={selectedMember.name.en} 
                     className="w-full h-full object-cover" 
                   />
