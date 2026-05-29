@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import api, { API_URL } from '../api/api';
+import api from '../api/api';
 import { Plus, Trash, Image as ImageIcon, Upload } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 const GalleryManager = () => {
   const [items, setItems] = useState([]);
@@ -132,7 +133,7 @@ const GalleryManager = () => {
         <div className="grid grid-cols-3 gap-3 overflow-y-auto max-h-[500px]">
           {items.map(item => (
             <div key={item._id} className="relative group rounded overflow-hidden border border-slate-800 bg-slate-900">
-              <img src={item.url.startsWith('http') ? item.url : `${API_URL}${item.url}`} className="w-full h-20 object-cover" alt="" />
+              <img src={getImageUrl(item.url)} className="w-full h-20 object-cover" alt="" />
               <button
                 onClick={() => handleDelete(item._id)}
                 className="absolute top-1 right-1 bg-black/60 hover:bg-red-600 p-1 rounded text-white opacity-0 group-hover:opacity-100 transition-opacity"
