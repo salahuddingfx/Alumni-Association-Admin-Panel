@@ -17,6 +17,7 @@ const DashboardLayout = ({ children }) => {
     { path: '/users', label: 'User Management', icon: <Shield size={18} /> },
     { path: '/payments', label: 'Event Payments', icon: <CreditCard size={18} /> },
     { path: '/registration-photos', label: 'Registration Photos', icon: <Camera size={18} /> },
+    { path: '/checkin', label: 'Gate Check-In', icon: <Camera size={18} /> },
     { path: '/donations', label: 'Donations', icon: <Heart size={18} /> },
     { path: '/settings', label: 'CMS Settings', icon: <Settings size={18} /> },
     { path: '/about-settings', label: 'About Page CMS', icon: <History size={18} /> },
