@@ -426,15 +426,27 @@ const MemberApprovals = () => {
               <div className="grid grid-cols-2 gap-4 bg-slate-900/30 p-4 rounded-xl border border-slate-800/60 text-sm">
                 <div>
                   <span className="text-gray-500 text-xxs uppercase block">PSC Batch</span>
-                  <span className="text-slate-200 font-semibold">Batch {selectedMember.pscBatch || selectedMember.batch || 'N/A'}</span>
+                  <span className="text-slate-200 font-semibold">Batch {selectedMember.pscBatch || 'N/A'}</span>
                 </div>
                 <div>
-                  <span className="text-gray-500 text-xxs uppercase block">Blood Group</span>
-                  <span className="text-rose-400 font-bold">{selectedMember.bloodGroup || 'N/A'}</span>
+                  <span className="text-gray-500 text-xxs uppercase block">SSC Batch</span>
+                  <span className="text-slate-200 font-semibold">Batch {selectedMember.batch || 'N/A'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 text-xxs uppercase block">HSC Batch</span>
+                  <span className="text-slate-200 font-semibold">Batch {selectedMember.hscBatch || 'N/A'}</span>
                 </div>
                 <div>
                   <span className="text-gray-500 text-xxs uppercase block">Gender</span>
                   <span className="text-slate-200 font-semibold">{selectedMember.gender || 'Male'}</span>
+                </div>
+                <div className="col-span-2">
+                  <span className="text-gray-500 text-xxs uppercase block">Higher Education</span>
+                  <span className="text-slate-200 font-semibold leading-relaxed block">{selectedMember.higherEducation || 'None Specified'}</span>
+                </div>
+                <div>
+                  <span className="text-gray-500 text-xxs uppercase block">Blood Group</span>
+                  <span className="text-rose-400 font-bold">{selectedMember.bloodGroup || 'N/A'}</span>
                 </div>
               </div>
             </div>
