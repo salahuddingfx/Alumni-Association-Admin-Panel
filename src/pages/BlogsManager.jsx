@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
 import { Plus, Trash, BookOpen, Upload, Send, Edit, X } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 const BlogsManager = () => {
   const [blogs, setBlogs] = useState([]);
@@ -289,7 +290,7 @@ const BlogsManager = () => {
                   <div className="w-16 h-10 bg-slate-800 rounded overflow-hidden shrink-0 flex items-center justify-center border border-slate-700">
                     {blog.thumbnail ? (
                       <img 
-                        src={blog.thumbnail.startsWith('http') ? blog.thumbnail : `${API_URL}${blog.thumbnail}`} 
+                        src={getImageUrl(blog.thumbnail)} 
                         className="w-full h-full object-cover" 
                         alt="" 
                       />
