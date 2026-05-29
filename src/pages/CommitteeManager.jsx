@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
-import { Plus, Trash, Users, Upload } from 'lucide-react';
+import { Plus, Trash, Users, Upload, Edit, X } from 'lucide-react';
 
 const CommitteeManager = () => {
   const [members, setMembers] = useState([]);
+  const [editingMember, setEditingMember] = useState(null);
   const [nameEn, setNameEn] = useState('');
   const [nameBn, setNameBn] = useState('');
   const [roleEn, setRoleEn] = useState('');
@@ -69,6 +70,76 @@ const CommitteeManager = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    try {
+      const token = localStorage.getItem('accessToken');
+      
+      const formData = new FormData();
+      formData.append('name', JSON.stringify({ en: nameEn, bn: nameBn }));
+      formData.append('role', JSON.stringify({ en: roleEn, bn: roleBn }));
+      formData.append('type', type);
+      formData.append('socialLinks', JSON.stringify({ facebook: fbLink, linkedin: liLink, email: emailLink }));
+      if (imageFile) {
+        formData.append('image', imageFile);
+      } else if (editingMember.image) {
+        formData.append('image', editingMember.image);
+      }
+
+      const res = await api.put(`${API_URL}/api/v1/committees/${editingMember._id}`, formData, {
+        headers: { 
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (res.data.success) {
+        setEditingMember(null);
+        setNameEn('');
+        setNameBn('');
+        setRoleEn('');
+        setRoleBn('');
+        setFbLink('#');
+        setLiLink('#');
+        setEmailLink('');
+        setImageFile(null);
+        fetchMembers();
+        setMessage('Committee member updated successfully!');
+        setTimeout(() => setMessage(''), 3000);
+      }
+    } catch (err) {
+      console.log(err);
+      alert(err.response?.data?.message || 'Failed to update member');
+    }
+  };
+
+  const startEdit = (member) => {
+    setEditingMember(member);
+    setNameEn(member.name?.en || '');
+    setNameBn(member.name?.bn || '');
+    setRoleEn(member.role?.en || '');
+    setRoleBn(member.role?.bn || '');
+    setType(member.type || 'executive');
+    setFbLink(member.socialLinks?.facebook || '#');
+    setLiLink(member.socialLinks?.linkedin || '#');
+    setEmailLink(member.socialLinks?.email || '');
+    setImageFile(null);
+    setMessage('');
+  };
+
+  const cancelEdit = () => {
+    setEditingMember(null);
+    setNameEn('');
+    setNameBn('');
+    setRoleEn('');
+    setRoleBn('');
+    setFbLink('#');
+    setLiLink('#');
+    setEmailLink('');
+    setImageFile(null);
+    setMessage('');
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this member from the committee?')) return;
     try {
@@ -86,11 +157,11 @@ const CommitteeManager = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Create form - 5 Cols */}
+      {/* Create / Edit form - 5 Cols */}
       <div className="lg:col-span-5 bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
         <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
-          <Plus size={20} className="text-secondary" />
-          <span>Add Committee Member</span>
+          {editingMember ? <Edit size={20} className="text-secondary" /> : <Plus size={20} className="text-secondary" />}
+          <span>{editingMember ? 'Edit Committee Member' : 'Add Committee Member'}</span>
         </h3>
 
         {message && (
@@ -99,7 +170,7 @@ const CommitteeManager = () => {
           </div>
         )}
 
-        <form onSubmit={handleCreate} className="space-y-4 text-sm">
+        <form onSubmit={editingMember ? handleUpdate : handleCreate} className="space-y-4 text-sm">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-slate-400 mb-1">Name (Bengali)</label>
@@ -159,15 +230,25 @@ const CommitteeManager = () => {
                 accept="image/*"
                 className="hidden"
                 onChange={e => setImageFile(e.target.files[0])}
-                required
+                required={!editingMember}
               />
             </label>
             {imageFile && <span className="text-xs text-gray-500 font-semibold mt-1 block">Selected: {imageFile.name}</span>}
+            {!imageFile && editingMember && editingMember.image && <span className="text-[10px] text-gray-500 font-medium mt-1 block">Leave empty to keep existing image</span>}
           </div>
 
-          <button type="submit" className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded shadow transition">
-            Save Committee Member
-          </button>
+          <div className="flex space-x-3 pt-2">
+            {editingMember && (
+              <button type="button" onClick={cancelEdit} className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1">
+                <X size={16} />
+                <span>Cancel</span>
+              </button>
+            )}
+            <button type="submit" className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1.5">
+              {editingMember ? <Edit size={16} /> : <Plus size={16} />}
+              <span>{editingMember ? 'Save Changes' : 'Save Member'}</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -194,9 +275,14 @@ const CommitteeManager = () => {
                     <span className="text-[10px] text-secondary font-bold uppercase tracking-wider block mt-0.5">{member.role.bn} ({member.type})</span>
                   </div>
                 </div>
-                <button onClick={() => handleDelete(member._id)} className="text-slate-500 hover:text-red-400 p-1.5 rounded transition">
-                  <Trash size={16} />
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button onClick={() => startEdit(member)} className="text-slate-400 hover:text-secondary p-1.5 rounded transition" title="Edit Member">
+                    <Edit size={16} />
+                  </button>
+                  <button onClick={() => handleDelete(member._id)} className="text-slate-500 hover:text-red-400 p-1.5 rounded transition" title="Delete Member">
+                    <Trash size={16} />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
