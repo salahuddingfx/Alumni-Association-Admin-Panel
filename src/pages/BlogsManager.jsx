@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
-import { Plus, Trash, BookOpen, Upload, Send } from 'lucide-react';
+import { Plus, Trash, BookOpen, Upload, Send, Edit, X } from 'lucide-react';
 
 const BlogsManager = () => {
   const [blogs, setBlogs] = useState([]);
+  const [editingBlog, setEditingBlog] = useState(null);
   const [titleEn, setTitleEn] = useState('');
   const [titleBn, setTitleBn] = useState('');
   const [contentEn, setContentEn] = useState('');
@@ -78,6 +79,85 @@ const BlogsManager = () => {
     }
   };
 
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+    if (saving) return;
+
+    try {
+      setSaving(true);
+      const token = localStorage.getItem('accessToken');
+      
+      const formData = new FormData();
+      formData.append('title', JSON.stringify({ en: titleEn, bn: titleBn }));
+      formData.append('content', JSON.stringify({ en: contentEn, bn: contentBn }));
+      formData.append('author', author);
+      formData.append('category', category);
+      formData.append('readTime', Number(readTime));
+      
+      if (thumbnailFile) {
+        formData.append('thumbnail', thumbnailFile);
+      } else if (editingBlog.thumbnail) {
+        formData.append('thumbnail', editingBlog.thumbnail);
+      }
+
+      const res = await api.put(`${API_URL}/api/v1/blogs/${editingBlog._id}`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+
+      if (res.data.success) {
+        setEditingBlog(null);
+        setTitleEn('');
+        setTitleBn('');
+        setContentEn('');
+        setContentBn('');
+        setAuthor('');
+        setCategory('news');
+        setReadTime(3);
+        setThumbnailFile(null);
+        setThumbnailFileName('');
+        fetchBlogs();
+        setMessage('Blog post updated successfully!');
+        setTimeout(() => setMessage(''), 3500);
+      }
+    } catch (err) {
+      console.log(err);
+      alert(err.response?.data?.message || 'Failed to update blog post');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const startEdit = (blog) => {
+    setEditingBlog(blog);
+    setTitleEn(blog.title?.en || '');
+    setTitleBn(blog.title?.bn || '');
+    setContentEn(blog.content?.en || '');
+    setContentBn(blog.content?.bn || '');
+    setAuthor(blog.author || '');
+    setCategory(blog.category || 'news');
+    setReadTime(blog.readTime || 3);
+    setThumbnailFile(null);
+    setThumbnailFileName('');
+    setMessage('');
+  };
+
+  const cancelEdit = () => {
+    setEditingBlog(null);
+    setTitleEn('');
+    setTitleBn('');
+    setContentEn('');
+    setContentBn('');
+    setAuthor('');
+    setCategory('news');
+    setReadTime(3);
+    setThumbnailFile(null);
+    setThumbnailFileName('');
+    setMessage('');
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Delete this blog post?')) return;
     try {
@@ -95,11 +175,11 @@ const BlogsManager = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-      {/* Create form - 5 columns */}
+      {/* Create / Edit form - 5 columns */}
       <div className="lg:col-span-5 bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
         <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
-          <Plus size={20} className="text-secondary" />
-          <span>Publish Blog Post</span>
+          {editingBlog ? <Edit size={20} className="text-secondary" /> : <Plus size={20} className="text-secondary" />}
+          <span>{editingBlog ? 'Edit Blog Post' : 'Publish Blog Post'}</span>
         </h3>
 
         {message && (
@@ -108,7 +188,7 @@ const BlogsManager = () => {
           </div>
         )}
 
-        <form onSubmit={handleCreate} className="space-y-3.5 text-xs">
+        <form onSubmit={editingBlog ? handleUpdate : handleCreate} className="space-y-3.5 text-xs">
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-slate-400 mb-1">Title (Bengali)</label>
@@ -167,16 +247,30 @@ const BlogsManager = () => {
               />
             </label>
             {thumbnailFileName && <span className="text-xs text-gray-500 font-semibold mt-1 block">Selected: {thumbnailFileName}</span>}
+            {!thumbnailFileName && editingBlog && editingBlog.thumbnail && <span className="text-[10px] text-gray-500 font-medium mt-1 block">Leave empty to keep existing thumbnail</span>}
           </div>
 
-          <button
-            type="submit"
-            disabled={saving}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1.5 uppercase text-xs"
-          >
-            <Send size={14} />
-            <span>{saving ? 'Publishing...' : 'Publish Article'}</span>
-          </button>
+          <div className="flex space-x-3 pt-2">
+            {editingBlog && (
+              <button
+                type="button"
+                onClick={cancelEdit}
+                disabled={saving}
+                className="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1 uppercase text-[10px]"
+              >
+                <X size={14} />
+                <span>Cancel</span>
+              </button>
+            )}
+            <button
+              type="submit"
+              disabled={saving}
+              className="flex-1 bg-primary hover:bg-primary-dark text-white font-bold py-2.5 rounded shadow transition flex items-center justify-center space-x-1.5 uppercase text-xs"
+            >
+              {editingBlog ? <Edit size={14} /> : <Send size={14} />}
+              <span>{saving ? 'Saving...' : (editingBlog ? 'Save Changes' : 'Publish Article')}</span>
+            </button>
+          </div>
         </form>
       </div>
 
@@ -210,9 +304,14 @@ const BlogsManager = () => {
                     </span>
                   </div>
                 </div>
-                <button onClick={() => handleDelete(blog._id)} className="text-slate-500 hover:text-red-400 p-1.5 rounded transition">
-                  <Trash size={16} />
-                </button>
+                <div className="flex items-center space-x-2">
+                  <button onClick={() => startEdit(blog)} className="text-slate-400 hover:text-secondary p-1.5 rounded transition" title="Edit Blog">
+                    <Edit size={16} />
+                  </button>
+                  <button onClick={() => handleDelete(blog._id)} className="text-slate-500 hover:text-red-400 p-1.5 rounded transition" title="Delete Blog">
+                    <Trash size={16} />
+                  </button>
+                </div>
               </div>
             ))
           ) : (
