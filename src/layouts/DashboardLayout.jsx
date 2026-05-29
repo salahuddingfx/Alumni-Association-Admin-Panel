@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import { LayoutDashboard, FileText, Calendar, Image, Users, Heart, Settings, LogOut, Shield, CreditCard, BookOpen, History, Camera, Search } from 'lucide-react';
 import CommandPalette from '../components/ui/CommandPalette.jsx';
-import api, { API_URL } from '../api/api';
+import api from '../api/api';
+import { getImageUrl } from '../utils/image';
 
 const DashboardLayout = ({ children }) => {
   const [isPaletteOpen, setIsPaletteOpen] = useState(false);
@@ -73,7 +74,7 @@ const DashboardLayout = ({ children }) => {
   const roleName = currentUser?.role ? currentUser.role.toUpperCase() : 'ADMINISTRATOR';
   const displayName = currentUser?.fullName || currentUser?.username || currentUser?.email || 'Admin User';
   const avatarUrl = currentUser?.profilePhoto 
-    ? (currentUser.profilePhoto.startsWith('http') ? currentUser.profilePhoto : `${API_URL}${currentUser.profilePhoto}`)
+    ? getImageUrl(currentUser.profilePhoto)
     : null;
 
   return (
