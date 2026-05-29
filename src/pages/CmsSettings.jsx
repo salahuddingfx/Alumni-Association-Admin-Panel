@@ -68,6 +68,7 @@ const CmsSettings = () => {
         setFacebook(val.facebook || '');
         setLinkedin(val.linkedin || '');
         setYoutube(val.youtube || '');
+        setIntroVideoUrl(val.introVideoUrl || '');
         setBkash(val.bkash || '');
         setNagad(val.nagad || '');
         setRocket(val.rocket || '');
@@ -98,6 +99,7 @@ const CmsSettings = () => {
           facebook,
           linkedin,
           youtube,
+          introVideoUrl,
           bkash,
           nagad,
           rocket,
@@ -313,6 +315,7 @@ const CmsSettings = () => {
               facebook={facebook} setFacebook={setFacebook}
               linkedin={linkedin} setLinkedin={setLinkedin}
               youtube={youtube} setYoutube={setYoutube}
+              introVideoUrl={introVideoUrl} setIntroVideoUrl={setIntroVideoUrl}
               bkash={bkash} setBkash={setBkash}
               nagad={nagad} setNagad={setNagad}
               rocket={rocket} setRocket={setRocket}
