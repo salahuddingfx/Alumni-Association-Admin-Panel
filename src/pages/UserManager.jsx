@@ -110,6 +110,8 @@ const UserManager = () => {
                       onChange={(e) => handleRoleChange(user._id, e.target.value)}
                       className="bg-dark-bg border border-slate-700 text-xs font-semibold text-slate-300 px-2 py-1 rounded focus:outline-none focus:border-secondary"
                     >
+                      <option value="user">User</option>
+                      <option value="member">Member</option>
                       <option value="moderator">Moderator</option>
                       <option value="admin">Admin</option>
                       <option value="superadmin">Superadmin</option>
