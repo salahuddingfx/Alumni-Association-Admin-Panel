@@ -62,6 +62,7 @@ const PaymentsManager = () => {
               <th className="px-6 py-3">Attendee</th>
               <th className="px-6 py-3">Event</th>
               <th className="px-6 py-3">Type</th>
+              <th className="px-6 py-3">Payment Info</th>
               <th className="px-6 py-3">Status</th>
               <th className="px-6 py-3 text-right">Actions</th>
             </tr>
@@ -91,6 +92,27 @@ const PaymentsManager = () => {
                     }`}>
                       {reg.paymentType}
                     </span>
+                  </td>
+                  <td className="px-6 py-4">
+                    {reg.paymentType === 'digital' ? (
+                      <div className="space-y-1">
+                        <div className="flex items-center space-x-1.5">
+                          <span className={`text-[10px] px-1.5 py-0.5 rounded font-extrabold uppercase ${
+                            reg.paymentProvider === 'bKash' 
+                              ? 'bg-pink-500/20 text-pink-400 border border-pink-500/30' 
+                              : 'bg-orange-500/20 text-orange-400 border border-orange-500/30'
+                          }`}>
+                            {reg.paymentProvider || 'Digital'}
+                          </span>
+                          <span className="text-xs text-slate-300 font-semibold">{reg.paymentNumber}</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 font-mono">
+                          Txn: {reg.transactionId || 'N/A'}
+                        </div>
+                      </div>
+                    ) : (
+                      <span className="text-xs text-slate-500 italic">Cash Checkout</span>
+                    )}
                   </td>
                   <td className="px-6 py-4">
                     <span className={`text-xs font-extrabold px-2.5 py-1 rounded-full border ${
