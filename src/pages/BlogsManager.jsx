@@ -2,9 +2,11 @@ import React, { useEffect, useState } from 'react';
 import api, { API_URL } from '../api/api';
 import { Plus, Trash, BookOpen, Upload, Send, Edit, X } from 'lucide-react';
 import { getImageUrl } from '../utils/image';
+import useConfirm from '../hooks/useConfirm';
 
 const BlogsManager = () => {
   const [blogs, setBlogs] = useState([]);
+  const { confirmDialog, openConfirm } = useConfirm();
   const [editingBlog, setEditingBlog] = useState(null);
   const [titleEn, setTitleEn] = useState('');
   const [titleBn, setTitleBn] = useState('');
@@ -74,7 +76,7 @@ const BlogsManager = () => {
       }
     } catch (err) {
       console.log(err);
-      alert(err.response?.data?.message || 'Failed to publish blog post');
+      setMessage(err.response?.data?.message || 'Failed to publish blog post');
     } finally {
       setSaving(false);
     }
@@ -125,7 +127,7 @@ const BlogsManager = () => {
       }
     } catch (err) {
       console.log(err);
-      alert(err.response?.data?.message || 'Failed to update blog post');
+      setMessage(err.response?.data?.message || 'Failed to update blog post');
     } finally {
       setSaving(false);
     }
@@ -160,7 +162,13 @@ const BlogsManager = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!window.confirm('Delete this blog post?')) return;
+    const confirmed = await openConfirm({
+      title: 'Delete Blog Post?',
+      message: 'This article will be permanently removed from the platform.',
+      type: 'danger',
+      confirmLabel: 'Yes, Delete',
+    });
+    if (!confirmed) return;
     try {
       const token = localStorage.getItem('accessToken');
       await api.delete(`${API_URL}/api/v1/blogs/${id}`, {
@@ -176,6 +184,7 @@ const BlogsManager = () => {
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+      {confirmDialog}
       {/* Create / Edit form - 5 columns */}
       <div className="lg:col-span-5 bg-dark-card p-6 rounded-xl border border-slate-800 space-y-4">
         <h3 className="text-lg font-bold text-slate-100 flex items-center space-x-2">
