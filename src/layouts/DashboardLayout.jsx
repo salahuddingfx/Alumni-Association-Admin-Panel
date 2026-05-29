@@ -62,13 +62,19 @@ const DashboardLayout = ({ children }) => {
       <aside className="w-64 bg-dark-card border-r border-slate-800 flex flex-col justify-between shrink-0">
         <div>
           {/* Logo Header */}
-          <div className="h-20 flex items-center px-6 border-b border-slate-800 space-x-3">
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg border border-secondary shadow-md">
-              প
-            </div>
-            <div className="flex flex-col">
-              <span className="text-base font-bold text-slate-100 font-bn tracking-wide">প্রাক্তন শিক্ষার্থী পরিষদ</span>
-              <span className="text-xxs text-gray-500 font-medium uppercase tracking-wider">Admin Panel</span>
+          <div className="h-20 flex items-center px-4 border-b border-slate-800 space-x-2.5">
+            <img 
+              src="/alumni_logo.png" 
+              className="w-10 h-10 rounded-full border border-secondary/60 shadow-md shrink-0 object-cover" 
+              alt="Logo" 
+            />
+            <div className="flex flex-col min-w-0">
+              <span className="text-sm font-bold text-slate-100 font-bn tracking-wide whitespace-nowrap truncate">
+                প্রাক্তন শিক্ষার্থী পরিষদ
+              </span>
+              <span className="text-[10px] text-slate-400 font-medium uppercase tracking-wider mt-0.5">
+                Admin Panel
+              </span>
             </div>
           </div>
 
@@ -121,13 +127,13 @@ const DashboardLayout = ({ children }) => {
               <kbd className="bg-slate-900 border border-slate-700 px-1 py-0.5 rounded text-[9px] font-mono ml-2">Ctrl+K</kbd>
             </button>
           </div>
-          <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 rounded-full bg-slate-700 flex items-center justify-center text-xs font-bold text-white uppercase border border-slate-600">
+          <div className="flex items-center space-x-3 bg-slate-800/40 pl-3 pr-4 py-1.5 rounded-full border border-slate-800/80 hover:border-slate-700/80 transition-all duration-200">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-primary to-slate-800 flex items-center justify-center text-xs font-bold text-slate-100 uppercase border border-slate-700 shadow-md shrink-0">
               {initial}
             </div>
-            <div className="flex flex-col text-left">
-              <span className="text-sm font-semibold text-slate-200">{displayName}</span>
-              <span className="text-[10px] text-gray-500 font-extrabold tracking-widest">{roleName}</span>
+            <div className="flex flex-col text-left min-w-0">
+              <span className="text-xs font-bold text-slate-200 truncate max-w-[120px]">{displayName}</span>
+              <span className="text-[9px] text-slate-400 font-semibold tracking-wider uppercase mt-0.5">{roleName}</span>
             </div>
           </div>
         </header>

@@ -37,9 +37,11 @@ const Login = () => {
     <div className="min-h-screen bg-dark-bg flex items-center justify-center p-6 text-slate-100 font-english">
       <div className="max-w-md w-full bg-dark-card p-8 rounded-2xl border border-slate-800 shadow-2xl">
         <div className="text-center mb-8">
-          <div className="w-12 h-12 bg-primary rounded-full flex items-center justify-center text-white font-bold text-lg mx-auto mb-3 border border-secondary">
-            প
-          </div>
+          <img 
+            src="/alumni_logo.png" 
+            className="w-12 h-12 rounded-full border border-secondary shadow-md mx-auto mb-3 object-cover" 
+            alt="Logo" 
+          />
           <h2 className="text-2xl font-extrabold text-slate-100 font-bn">অ্যাডমিন প্যানেল লগইন</h2>
           <p className="text-xs text-gray-500 mt-1 uppercase tracking-wider">Practon Alumni Association Portal</p>
         </div>
