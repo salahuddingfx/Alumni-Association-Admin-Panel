@@ -16,6 +16,7 @@ import BlogsManager from './pages/BlogsManager.jsx';
 import Login from './pages/Login.jsx';
 import RegistrationsPhotos from './pages/RegistrationsPhotos.jsx';
 import VolunteerCheckIn from './pages/VolunteerCheckIn.jsx';
+import PartnersManager from './pages/PartnersManager.jsx';
 
 const App = () => {
   const navigate = useNavigate();
@@ -52,6 +53,7 @@ const App = () => {
         <Route path="/registration-photos" element={<RegistrationsPhotos />} />
         <Route path="/checkin" element={<VolunteerCheckIn />} />
         <Route path="/donations" element={<DonationsTracker />} />
+        <Route path="/partners" element={<PartnersManager />} />
         <Route path="/settings" element={<CmsSettings />} />
         <Route path="/about-settings" element={<AboutManager />} />
       </Routes>
