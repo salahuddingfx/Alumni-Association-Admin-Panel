@@ -150,6 +150,8 @@ const CommitteeManager = () => {
     setLiLink('#');
     setEmailLink('');
     setImageFile(null);
+    setBannerPhotoFile(null);
+    setBannerPhotoPreview('');
     setMessage('');
   };
 
