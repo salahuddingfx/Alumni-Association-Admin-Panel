@@ -25,10 +25,7 @@ const PaymentsManager = () => {
   }, []);
 
   const fetchRegistrations = () => {
-    const token = localStorage.getItem('accessToken');
-    api.get('/events/admin/registrations', {
-      headers: { Authorization: `Bearer ${token}` }
-    })
+    api.get('/events/admin/registrations')
       .then(res => {
         if (res.data.success) {
           setRegistrations(res.data.data);
@@ -56,10 +53,8 @@ const PaymentsManager = () => {
 
   const handleUpdateStatus = async (regId, status) => {
     try {
-      const token = localStorage.getItem('accessToken');
       const res = await api.put(`/events/admin/registrations/${regId}/payment-status`, 
-        { paymentStatus: status },
-        { headers: { Authorization: `Bearer ${token}` } }
+        { paymentStatus: status }
       );
       if (res.data.success) {
         fetchRegistrations();
