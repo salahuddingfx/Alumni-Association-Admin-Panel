@@ -15,6 +15,8 @@ const CommitteeManager = () => {
   const [liLink, setLiLink] = useState('#');
   const [emailLink, setEmailLink] = useState('');
   const [imageFile, setImageFile] = useState(null);
+  const [bannerPhotoFile, setBannerPhotoFile] = useState(null);
+  const [bannerPhotoPreview, setBannerPhotoPreview] = useState('');
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -43,6 +45,9 @@ const CommitteeManager = () => {
       formData.append('socialLinks', JSON.stringify({ facebook: fbLink, linkedin: liLink, email: emailLink }));
       if (imageFile) {
         formData.append('image', imageFile);
+      }
+      if (bannerPhotoFile) {
+        formData.append('bannerPhoto', bannerPhotoFile);
       }
 
       const res = await api.post(`${API_URL}/api/v1/committees`, formData, {
@@ -86,6 +91,9 @@ const CommitteeManager = () => {
       } else if (editingMember.image) {
         formData.append('image', editingMember.image);
       }
+      if (bannerPhotoFile) {
+        formData.append('bannerPhoto', bannerPhotoFile);
+      }
 
       const res = await api.put(`${API_URL}/api/v1/committees/${editingMember._id}`, formData, {
         headers: { 
@@ -104,6 +112,8 @@ const CommitteeManager = () => {
         setLiLink('#');
         setEmailLink('');
         setImageFile(null);
+        setBannerPhotoFile(null);
+        setBannerPhotoPreview('');
         fetchMembers();
         setMessage('Committee member updated successfully!');
         setTimeout(() => setMessage(''), 3000);
@@ -125,6 +135,8 @@ const CommitteeManager = () => {
     setLiLink(member.socialLinks?.linkedin || '#');
     setEmailLink(member.socialLinks?.email || '');
     setImageFile(null);
+    setBannerPhotoFile(null);
+    setBannerPhotoPreview(member.bannerPhoto || '');
     setMessage('');
   };
 
@@ -236,6 +248,35 @@ const CommitteeManager = () => {
             </label>
             {imageFile && <span className="text-xs text-gray-500 font-semibold mt-1 block">Selected: {imageFile.name}</span>}
             {!imageFile && editingMember && editingMember.image && <span className="text-[10px] text-gray-500 font-medium mt-1 block">Leave empty to keep existing image</span>}
+          </div>
+
+          {/* Banner Photo Selector */}
+          <div>
+            <label className="block text-slate-400 text-xs mb-1.5 font-semibold uppercase">Cover Photo (Banner)</label>
+            <div className="relative rounded-lg overflow-hidden border border-dashed border-slate-700 group" style={{ height: '90px' }}>
+              {bannerPhotoPreview ? (
+                <img src={bannerPhotoPreview} className="w-full h-full object-cover" alt="Banner" />
+              ) : (
+                <div className="w-full h-full bg-gradient-to-r from-slate-800 to-slate-700 flex items-center justify-center">
+                  <span className="text-slate-500 text-xs font-bold uppercase tracking-wider">Set Banner Photo</span>
+                </div>
+              )}
+              <label className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex flex-col items-center justify-center cursor-pointer transition-opacity">
+                <Upload size={18} className="text-white mb-1" />
+                <span className="text-white text-xs font-bold">Upload Banner</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={e => {
+                    if (e.target.files[0]) {
+                      setBannerPhotoFile(e.target.files[0]);
+                      setBannerPhotoPreview(URL.createObjectURL(e.target.files[0]));
+                    }
+                  }}
+                />
+              </label>
+            </div>
           </div>
 
           <div className="flex space-x-3 pt-2">
