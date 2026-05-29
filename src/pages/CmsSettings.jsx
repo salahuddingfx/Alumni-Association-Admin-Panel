@@ -24,6 +24,7 @@ const CmsSettings = () => {
   const [facebook, setFacebook] = useState('https://facebook.com');
   const [linkedin, setLinkedin] = useState('https://linkedin.com');
   const [youtube, setYoutube] = useState('https://youtube.com');
+  const [introVideoUrl, setIntroVideoUrl] = useState('https://www.youtube.com/embed/9ycVq2kU7L0');
   const [bkash, setBkash] = useState('+880 1700 000000');
   const [nagad, setNagad] = useState('+880 1800 000000');
   const [rocket, setRocket] = useState('+880 1900 000000');
