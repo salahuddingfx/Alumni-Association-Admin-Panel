@@ -13,6 +13,7 @@ const GeneralSettings = ({
   facebook, setFacebook,
   linkedin, setLinkedin,
   youtube, setYoutube,
+  introVideoUrl, setIntroVideoUrl,
   bkash, setBkash,
   nagad, setNagad,
   rocket, setRocket
